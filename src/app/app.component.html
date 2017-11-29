@@ -16,10 +16,10 @@
 
   <div class="row justify-content-center">
     <div class="media">
-      <img class="d-flex mr-3" width="60" src="https://avatars1.githubusercontent.com/u/15218904?s=460&v=4">
+      <img class="d-flex mr-3" width="60" src="{{ (user | async)?.photoURL }}" alt="{{ (user | async)?.displayName }}">
       <div class="media-body">
-        <h5 class="mt-0">Ricardo Rinco</h5>
-        <p class="mt-0">ricardo@sevencode.com.br</p>
+        <h5 class="mt-0">{{ (user | async)?.displayName }}</h5>
+        <p class="mt-0">{{ (user | async)?.email }}</p>
         <button class="btn btn-info">Sair</button>
       </div>
     </div>
@@ -28,7 +28,7 @@
 
   <div class="container">
     <div class="row justify-content-center">
-      <button class="btn btn-block btn-outline-primary col-md-2"><i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook</button>
+      <button (click)="loginFacebook()" class="btn btn-block btn-outline-primary col-md-2"><i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook</button>
     </div>
 
     <div class="row justify-content-center">
