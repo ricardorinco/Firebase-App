@@ -16,7 +16,8 @@
 
   <div *ngIf="(user | async)" class="row justify-content-center">
     <div class="media">
-      <img class="d-flex mr-3" width="60" src="{{ (user | async)?.photoURL }}" alt="{{ (user | async)?.displayName }}">
+      <img *ngIf="(user | async)?.photoURL" class="d-flex mr-3" width="60" src="{{ (user | async)?.photoURL }}" alt="{{ (user | async)?.displayName }}">
+      <img *ngIf="!(user | async)?.photoURL" class="d-flex mr-3" width="60" src="https://agenciamoustache.com.br/wp-content/uploads/2016/02/user-id-o-que-%C3%A9-295x300.png" alt="{{ (user | async)?.displayName }}">
       <div class="media-body">
         <h5 class="mt-0">{{ (user | async)?.displayName }}</h5>
         <p class="mt-0">{{ (user | async)?.email }}</p>
@@ -36,22 +37,25 @@
     </div>
 
     <div class="row justify-content-center">
-      <button (click)="viewLoginForm = !viewLoginForm" class="btn btn-block btn-outline-danger col-md-2"><i class="fa fa-envelope" aria-hidden="true"></i> Email</button>
+      <button (click)="showLoginForm()" class="btn btn-block btn-outline-danger col-md-2"><i class="fa fa-envelope" aria-hidden="true"></i> Email</button>
     </div>
     <br />
 
     <div class="row justify-content-center">
-      <button (click)="viewAddForm = !viewAddForm" class="btn btn-block btn-outline-warning col-md-2"><i class="fa fa-user-circle-o" aria-hidden="true"></i> Cadastro</button>
+      <button (click)="showAddForm()" class="btn btn-block btn-outline-warning col-md-2"><i class="fa fa-user-circle-o" aria-hidden="true"></i> Cadastro</button>
     </div>
   </div>
   <br />
 
-  <div *ngIf="viewLoginForm" class="row justify-content-center">
+  <div *ngIf="viewLoginForm || viewAddForm" class="row justify-content-center">
     <div class="row col-md-3">
+      <input *ngIf="viewAddForm" type="text" [(ngModel)]="name" class="form-control" placeholder="Nome">
+      <input *ngIf="viewAddForm" type="text" [(ngModel)]="image" class="form-control" placeholder="Imagem do Perfil">
       <input type="email" [(ngModel)]="email" class="form-control" placeholder="E-mail">
       <input type="password" [(ngModel)]="password" class="form-control" placeholder="Senha">
 
-      <button (click)="loginEmail()" class="btn btn-block btn-secondary"><i class="fa fa-sign-in" aria-hidden="true"></i> Entrar</button>
+      <button *ngIf="!viewAddForm" (click)="loginEmail()" class="btn btn-block btn-secondary"><i class="fa fa-sign-in" aria-hidden="true"></i> Entrar</button>
+      <button *ngIf="viewAddForm" (click)="addUser()" class="btn btn-block btn-warning"><i class="fa fa-sign-in" aria-hidden="true"></i> Cadastrar</button>
     </div>
   </div>
 

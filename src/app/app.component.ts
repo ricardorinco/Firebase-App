@@ -15,6 +15,11 @@ export class AppComponent {
 
   user: Observable<firebase.User>;
 
+  viewLoginForm: boolean = false;
+  viewAddForm: boolean = false;
+
+  name: string;
+  image: string;
   email: string;
   password: string;
 
@@ -22,23 +27,54 @@ export class AppComponent {
     this.user = this.angularFireAuth.authState;
   }
 
+  showLoginForm() {
+    this.viewLoginForm = this.viewLoginForm === false ? true : false;
+  }
+
+  showAddForm() {
+    this.viewLoginForm = false;
+    this.viewAddForm = this.viewAddForm === false ? true : false;
+  }
+
+  addUser() {
+    firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+      .then((response: any) => {
+        let currentUser = firebase.auth().currentUser;
+        currentUser.updateProfile({ displayName: this.name, photoURL: this.image });
+      })
+      .catch((error: any) => { console.log(error); });
+
+    this.cleanForm();
+  }
+
   loginFacebook() {
-    this.angularFireAuth.auth.signInWithPopup(new firebase.auth.FacebookAuthProvider());
+    this.angularFireAuth.auth.signInWithPopup(new firebase.auth.FacebookAuthProvider())
+      .then((response: any) => { firebase.auth().currentUser.linkWithCredential(response.credential); })
+      .catch((error: any) => { firebase.auth().currentUser.linkWithCredential(error.credential); });
   }
 
   loginGitHub() {
-    this.angularFireAuth.auth.signInWithPopup(new firebase.auth.GithubAuthProvider());
+    this.angularFireAuth.auth.signInWithPopup(new firebase.auth.GithubAuthProvider())
+      .then((response: any) => { firebase.auth().currentUser.linkWithCredential(response.credential); })
+      .catch((error: any) => { firebase.auth().currentUser.linkWithCredential(error.credential); });
   }
 
   loginEmail() {
     firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-      .catch((error: any) => { console.log(error); } );
+      .then((response: any) => { firebase.auth().currentUser.linkWithCredential(response.credential); })
+      .catch((error: any) => { firebase.auth().currentUser.linkWithCredential(error.credential); });
 
-    this.email = '';
-    this.password = '';
+    this.cleanForm();
   }
 
   signOut() {
     this.angularFireAuth.auth.signOut();
+  }
+
+  cleanForm() {
+    this.name = '';
+    this.image = '';
+    this.email = '';
+    this.password = '';
   }
 }
